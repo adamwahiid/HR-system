@@ -6,29 +6,37 @@ func setupRouter() *gin.Engine {
 
 	r := gin.Default()
 
-	// Authentication
+	// Public routes — no token needed
 	r.POST("/register", Register)
+	r.POST("/login", Login)
 
-	// Workers
-	r.GET("/workers", GetWorkers)
-	r.GET("/workers/:id", GetWorkerByID)
-	r.POST("/workers", CreateWorker)
-	r.PUT("/workers/:id", UpdateWorker)
-	r.DELETE("/workers/:id", DeleteWorker)
+	// Protected routes — token required
+	protected := r.Group("/")
+	protected.Use(AuthMiddleware())
+	{
+		//log out
+		protected.POST("/logout", Logout)
+		// Workers
+		protected.GET("/workers", GetWorkers)
+		protected.GET("/workers/:id", GetWorkerByID)
+		protected.POST("/workers", CreateWorker)
+		protected.PUT("/workers/:id", UpdateWorker)
+		protected.DELETE("/workers/:id", DeleteWorker)
 
-	// Managers
-	r.GET("/managers", GetManagers)
-	r.GET("/managers/:id", GetManagerByID)
-	r.POST("/managers", CreateManager)
-	r.PUT("/managers/:id", UpdateManager)
-	r.DELETE("/managers/:id", DeleteManager)
+		// Managers
+		protected.GET("/managers", GetManagers)
+		protected.GET("/managers/:id", GetManagerByID)
+		protected.POST("/managers", CreateManager)
+		protected.PUT("/managers/:id", UpdateManager)
+		protected.DELETE("/managers/:id", DeleteManager)
 
-	// Board Members
-	r.GET("/board-members", GetBoardMembers)
-	r.GET("/board-members/:id", GetBoardMemberByID)
-	r.POST("/board-members", CreateBoardMember)
-	r.PUT("/board-members/:id", UpdateBoardMember)
-	r.DELETE("/board-members/:id", DeleteBoardMember)
+		// Board Members
+		protected.GET("/board-members", GetBoardMembers)
+		protected.GET("/board-members/:id", GetBoardMemberByID)
+		protected.POST("/board-members", CreateBoardMember)
+		protected.PUT("/board-members/:id", UpdateBoardMember)
+		protected.DELETE("/board-members/:id", DeleteBoardMember)
+	}
 
 	return r
 }

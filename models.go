@@ -29,6 +29,7 @@ type Worker struct {
 	Salary    float64 `gorm:"column:salary;not null" json:"salary"`
 	RoleID    int     `gorm:"column:role_id;not null" json:"role_id"`
 	ManagerID int     `gorm:"column:manager_id;not null" json:"manager_id"`
+	UserID *int `gorm:"column:user_id" json:"user_id"`
 }
 
 func (Worker) TableName() string {
@@ -44,6 +45,7 @@ type Manager struct {
 	Salary    float64 `gorm:"column:salary;not null" json:"salary"`
 	RoleID    int     `gorm:"column:role_id;not null" json:"role_id"`
 	BoardMemID int     `gorm:"column:board_mem_id" json:"board_mem_id"`
+	UserID *int `gorm:"column:user_id" json:"user_id"`
 }
 
 func (Manager) TableName() string {
@@ -58,6 +60,7 @@ type BoardMember struct {
 	Password   string  `gorm:"column:password;not null" json:"password"`
 	Salary     float64 `gorm:"column:salary;not null" json:"salary"`
 	RoleID     int     `gorm:"column:role_id;not null" json:"role_id"`
+	UserID *int `gorm:"column:user_id" json:"user_id"`
 }
 
 func (BoardMember) TableName() string {

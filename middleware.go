@@ -32,6 +32,9 @@ func AuthMiddleware() gin.HandlerFunc {
 		claims := jwt.MapClaims{}
 
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, jwt.ErrSignatureInvalid
+			}
 			return jwtSecret, nil
 		})
 
@@ -46,5 +49,27 @@ func AuthMiddleware() gin.HandlerFunc {
 		c.Set("role_id", claims["role_id"])
 
 		c.Next()
+	}
+}
+
+// RequireRole checks if the user has one of the allowed roles
+func RequireRole(allowedRoles ...string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		roleName, _, err := GetUserRole(c)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			c.Abort()
+			return
+		}
+
+		for _, allowedRole := range allowedRoles {
+			if roleName == strings.ToLower(allowedRole) {
+				c.Next()
+				return
+			}
+		}
+
+		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: insufficient permissions"})
+		c.Abort()
 	}
 }

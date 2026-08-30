@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Login View -->
+    <div id="login-view" class="view active">
+        <div class="glass-card login-card">
+            <div class="logo">
+                <div class="logo-icon">✦</div>
+                <h1>System</h1>
+            </div>
+            <h2>Welcome Back</h2>
+            <p>Enter your credentials to access the portal.</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required placeholder="please enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                <div id="login-error" class="error-text hidden">Invalid email or password</div>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard View -->
+    <div id="dashboard-view" class="view hidden">
+        <nav class="glass-nav">
+            <div class="logo">
+                <div class="logo-icon">✦</div>
+                <h1>System</h1>
+            </div>
+            <div class="user-menu">
+                <span id="user-role-badge" class="badge">Role</span>
+                <button id="logout-btn" class="btn-secondary">Logout</button>
+            </div>
+        </nav>
+
+        <main class="dashboard-content">
+            <div class="dashboard-header-container">
+                <div class="dashboard-header">
+                    <h2>Company Directory</h2>
+                    <p>View and manage all active personnel.</p>
+                </div>
+                <button id="add-employee-btn" class="btn-primary hidden">+ Add Personnel</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-target="workers-list">Workers</button>
+                <button class="tab-btn" data-target="managers-list">Managers</button>
+                <button class="tab-btn" data-target="board-list">Board Members</button>
+            </div>
+
+            <div class="glass-card list-container">
+                <div id="workers-list" class="list-view active">
+                    <div class="list-header workers-grid">
+                        <span>Name</span>
+                        <span>Email</span>
+                        <span>Salary</span>
+                        <span>Manager</span>
+                        <span>Board Member</span>
+                        <span class="actions-header">Actions</span>
+                    </div>
+                    <div id="workers-content" class="list-body">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div id="managers-list" class="list-view hidden">
+                    <div class="list-header managers-grid">
+                        <span>Name</span>
+                        <span>Email</span>
+                        <span>Salary</span>
+                        <span>Board Member</span>
+                        <span>Workers</span>
+                        <span class="actions-header">Actions</span>
+                    </div>
+                    <div id="managers-content" class="list-body">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div id="board-list" class="list-view hidden">
+                    <div class="list-header board-grid">
+                        <span>Name</span>
+                        <span>Email</span>
+                        <span>Salary</span>
+                        <span>Managers</span>
+                        <span>Workers</span>
+                        <span class="actions-header">Actions</span>
+                    </div>
+                    <div id="board-content" class="list-body">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div id="add-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-card">
+            <div class="modal-header">
+                <h3>Add New Personnel</h3>
+                <button class="close-btn" id="close-add-modal">&times;</button>
+            </div>
+            <form id="add-form">
+                <div class="input-group">
+                    <label>Role</label>
+                    <select id="add-role" required>
+                        <option value="5">Board Member</option>
+                        <option value="4">Manager</option>
+                        <option value="3">Worker</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Name</label>
+                    <input type="text" id="add-name" required>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="add-email" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="add-password" required>
+                </div>
+                <div class="input-group">
+                    <label>Salary</label>
+                    <input type="number" id="add-salary" required min="0" step="1000">
+                </div>
+                <!-- Conditional Fields -->
+                <div class="input-group hidden" id="manager-select-group">
+                    <label>Assign to Manager</label>
+                    <select id="add-manager-id"></select>
+                </div>
+                <div class="input-group hidden" id="board-select-group">
+                    <label>Assign to Board Member</label>
+                    <select id="add-board-id"></select>
+                </div>
+
+                <div id="add-error" class="error-text hidden"></div>
+                <button type="submit" class="btn-primary" style="margin-top: 10px;">Create User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Employee Modal -->
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-card">
+            <div class="modal-header">
+                <h3 id="edit-title">Edit Personnel</h3>
+                <button class="close-btn" id="close-edit-modal">&times;</button>
+            </div>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <input type="hidden" id="edit-type">
+
+                <div class="input-group">
+                    <label>Name</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="edit-email" required>
+                </div>
+                <div class="input-group">
+                    <label>New Password (leave blank to keep current)</label>
+                    <input type="password" id="edit-password" placeholder="••••••••">
+                </div>
+                <div class="input-group" id="edit-salary-group">
+                    <label>Salary (Admins/HR only)</label>
+                    <input type="number" id="edit-salary" required min="0" step="1000">
+                </div>
+
+                <!-- Conditional Fields -->
+                <div class="input-group hidden" id="edit-manager-select-group">
+                    <label>Assign to Manager</label>
+                    <select id="edit-manager-id"></select>
+                </div>
+                <div class="input-group hidden" id="edit-board-select-group">
+                    <label>Assign to Board Member</label>
+                    <select id="edit-board-id"></select>
+                </div>
+
+                <div id="edit-error" class="error-text hidden"></div>
+                <button type="submit" class="btn-primary" style="margin-top: 10px;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Relations View Modal -->
+    <div id="relations-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-card">
+            <div class="modal-header">
+                <h3 id="relations-title">Related Personnel</h3>
+                <button class="close-btn" id="close-relations-modal">&times;</button>
+            </div>
+            <div class="relations-content" id="relations-content" style="margin-top: 15px; max-height: 300px; overflow-y: auto;">
+                <!-- Filled dynamically by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

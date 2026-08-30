@@ -21,15 +21,15 @@ func (User) TableName() string {
 }
 
 type Worker struct {
-	WorkerID  int     `gorm:"column:worker_id;primaryKey;autoIncrement" json:"worker_id"`
-	FirstName string  `gorm:"column:first_name;not null" json:"first_name"`
-	LastName  string  `gorm:"column:last_name;not null" json:"last_name"`
-	Email     string  `gorm:"column:email;unique;not null" json:"email"`
-	Password  string  `gorm:"column:password;not null" json:"password"`
-	Salary    float64 `gorm:"column:salary;not null" json:"salary"`
-	RoleID    int     `gorm:"column:role_id;not null" json:"role_id"`
-	ManagerID int     `gorm:"column:manager_id;not null" json:"manager_id"`
-	UserID *int `gorm:"column:user_id" json:"user_id"`
+	WorkerID     int     `gorm:"column:worker_id;primaryKey;autoIncrement" json:"worker_id"`
+	Name         string  `gorm:"column:name;not null" json:"name"`
+	Email        string  `gorm:"column:email;unique;not null" json:"email"`
+	Salary       float64 `gorm:"column:salary;not null" json:"salary"`
+	RoleID       int     `gorm:"column:role_id;not null" json:"role_id"`
+	ManagerID    int     `gorm:"column:manager_id;not null" json:"manager_id"`
+	UserID       *int    `gorm:"column:user_id" json:"user_id"`
+	ManagerName  string  `gorm:"-" json:"manager_name"`
+	BoardMemName string  `gorm:"-" json:"board_mem_name"`
 }
 
 func (Worker) TableName() string {
@@ -37,15 +37,16 @@ func (Worker) TableName() string {
 }
 
 type Manager struct {
-	ManagerID int     `gorm:"column:manager_id;primaryKey;autoIncrement" json:"manager_id"`
-	FirstName string  `gorm:"column:first_name;not null" json:"first_name"`
-	LastName  string  `gorm:"column:last_name;not null" json:"last_name"`
-	Email     string  `gorm:"column:email;unique;not null" json:"email"`
-	Password  string  `gorm:"column:password;not null" json:"password"`
-	Salary    float64 `gorm:"column:salary;not null" json:"salary"`
-	RoleID    int     `gorm:"column:role_id;not null" json:"role_id"`
-	BoardMemID int     `gorm:"column:board_mem_id" json:"board_mem_id"`
-	UserID *int `gorm:"column:user_id" json:"user_id"`
+	ManagerID    int      `gorm:"column:manager_id;primaryKey;autoIncrement" json:"manager_id"`
+	Name         string   `gorm:"column:name;not null" json:"name"`
+	Email        string   `gorm:"column:email;unique;not null" json:"email"`
+	Salary       float64  `gorm:"column:salary;not null" json:"salary"`
+	RoleID       int      `gorm:"column:role_id;not null" json:"role_id"`
+	BoardMemID   int      `gorm:"column:board_mem_id" json:"board_mem_id"`
+	UserID       *int     `gorm:"column:user_id" json:"user_id"`
+	ManagerName  string   `gorm:"-" json:"manager_name"`
+	BoardMemName string   `gorm:"-" json:"board_mem_name"`
+	WorkerNames  []string `gorm:"-" json:"workers"`
 }
 
 func (Manager) TableName() string {
@@ -53,14 +54,16 @@ func (Manager) TableName() string {
 }
 
 type BoardMember struct {
-	BoardMemID int     `gorm:"column:board_mem_id;primaryKey;autoIncrement" json:"board_mem_id"`
-	FirstName  string  `gorm:"column:first_name;not null" json:"first_name"`
-	LastName   string  `gorm:"column:last_name;not null" json:"last_name"`
-	Email      string  `gorm:"column:email;unique;not null" json:"email"`
-	Password   string  `gorm:"column:password;not null" json:"password"`
-	Salary     float64 `gorm:"column:salary;not null" json:"salary"`
-	RoleID     int     `gorm:"column:role_id;not null" json:"role_id"`
-	UserID *int `gorm:"column:user_id" json:"user_id"`
+	BoardMemID   int      `gorm:"column:board_mem_id;primaryKey;autoIncrement" json:"board_mem_id"`
+	Name         string   `gorm:"column:name;not null" json:"name"`
+	Email        string   `gorm:"column:email;unique;not null" json:"email"`
+	Salary       float64  `gorm:"column:salary;not null" json:"salary"`
+	RoleID       int      `gorm:"column:role_id;not null" json:"role_id"`
+	UserID       *int     `gorm:"column:user_id" json:"user_id"`
+	ManagerName  string   `gorm:"-" json:"manager_name"`
+	BoardMemName string   `gorm:"-" json:"board_mem_name"`
+	ManagerNames []string `gorm:"-" json:"managers"`
+	WorkerNames  []string `gorm:"-" json:"workers"`
 }
 
 func (BoardMember) TableName() string {

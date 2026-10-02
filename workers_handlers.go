@@ -68,29 +68,32 @@ func populateWorkerNames(worker *Worker) {
 
 // Get all workers
 func GetWorkers(c *gin.Context) {
-	roleName, _, err := GetUserRole(c)
+	roleName, loggedInUserID, err := GetUserRole(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
 	var workers []Worker
-	query := DB
 
 	switch roleName {
 	case "admin", "hr", "manager", "worker", "board member", "board_member":
-		// Can see all
+		// All authenticated company roles can see all workers in directory
+		if err := DB.Find(&workers).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
 	default:
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 		return
 	}
 
-	if err := query.Find(&workers).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
+	// Add manager and board member names
 	populateWorkersNames(workers)
+
+	// Mask salaries for workers that don't belong to the logged-in user (unless admin/hr)
+	MaskWorkersSalaries(workers, roleName, loggedInUserID)
 
 	c.JSON(http.StatusOK, workers)
 }
@@ -98,7 +101,7 @@ func GetWorkers(c *gin.Context) {
 // Get worker by ID
 func GetWorkerByID(c *gin.Context) {
 	id := c.Param("id")
-	roleName, _, err := GetUserRole(c)
+	roleName, loggedInUserID, err := GetUserRole(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
@@ -120,6 +123,7 @@ func GetWorkerByID(c *gin.Context) {
 	}
 
 	populateWorkerNames(&worker)
+	MaskWorkerSalary(&worker, roleName, loggedInUserID)
 
 	c.JSON(http.StatusOK, worker)
 }
@@ -188,7 +192,7 @@ func UpdateWorker(c *gin.Context) {
 	// Update restricted fields only if admin/hr
 	if roleName == "admin" || roleName == "hr" {
 		if req.Salary != nil {
-			worker.Salary = *req.Salary
+			worker.Salary = req.Salary
 		}
 		if req.ManagerID != nil {
 			var checkManager Manager
@@ -231,6 +235,7 @@ func UpdateWorker(c *gin.Context) {
 	}
 
 	populateWorkerNames(&worker)
+	MaskWorkerSalary(&worker, roleName, loggedInUserID)
 
 	c.JSON(http.StatusOK, worker)
 }

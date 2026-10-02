@@ -101,6 +101,11 @@ In Postman, it is helpful to set up an environment variable called `{{token}}` t
   ```
 - **Expected Success:** `200 OK`
 - **Important Permission Test:** As a regular worker, try updating your `"salary"`. The API should succeed in updating your name, but it should completely ignore your attempt to change the salary.
+- **Important Salary Privacy Test:**
+  - When logged in as a Worker, `GET /workers` returns their own profile with their salary, but `GET /workers/:id` for another worker, `GET /managers`, and `GET /board-members` will show `"salary": null`.
+  - When logged in as a Manager, `GET /managers` returns their own salary, but other managers, workers, and board members will show `"salary": null`.
+  - When logged in as a Board Member, `GET /board-members` returns their own salary, but other board members, managers, and workers will show `"salary": null`.
+  - Only Admin and HR can see all salaries across all roles.
 
 ### Delete Worker
 - **Method:** `DELETE`

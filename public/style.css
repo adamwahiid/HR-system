@@ -480,3 +480,18 @@ select option {
 .btn-edit:hover {
     background: rgba(99, 102, 241, 0.2);
 }
+
+.salary-confidential {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--glass-border);
+    letter-spacing: 0.3px;
+    user-select: none;
+}

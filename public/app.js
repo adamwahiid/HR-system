@@ -258,11 +258,15 @@ function renderList(containerId, items, type, idField) {
             `;
         }
 
+        const salaryDisplay = (item.salary !== null && item.salary !== undefined)
+            ? `$${Number(item.salary).toLocaleString()}`
+            : `<span class="salary-confidential">Confidential</span>`;
+
         return `
             <div class="list-item ${gridClass}">
                 <span style="font-weight: 500">${item.name}</span>
                 <span style="color: var(--text-muted)">${item.email}</span>
-                <span>$${item.salary.toLocaleString()}</span>
+                <span>${salaryDisplay}</span>
                 ${extraCols}
                 <div class="actions-cell">
                     ${actionBtns}
@@ -385,7 +389,7 @@ window.openEditModal = (type, itemJSON) => {
     document.getElementById('edit-name').value = item.name;
     document.getElementById('edit-email').value = item.email;
     document.getElementById('edit-password').value = ''; // Reset password field
-    document.getElementById('edit-salary').value = item.salary;
+    document.getElementById('edit-salary').value = (item.salary !== null && item.salary !== undefined) ? item.salary : '';
     
     // Authz Form Logic: Only Admin/HR can see/edit Salary or Assignments
     if (roleId === 1 || roleId === 2) {

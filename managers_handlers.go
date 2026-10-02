@@ -67,7 +67,7 @@ func populateManagerNames(manager *Manager) {
 
 // Get all managers
 func GetManagers(c *gin.Context) {
-	roleName, _, err := GetUserRole(c)
+	roleName, loggedInUserID, err := GetUserRole(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
@@ -90,6 +90,7 @@ func GetManagers(c *gin.Context) {
 	}
 
 	populateManagersNames(managers)
+	MaskManagersSalaries(managers, roleName, loggedInUserID)
 
 	c.JSON(http.StatusOK, managers)
 }
@@ -97,7 +98,7 @@ func GetManagers(c *gin.Context) {
 // Get manager by ID
 func GetManagerByID(c *gin.Context) {
 	id := c.Param("id")
-	roleName, _, err := GetUserRole(c)
+	roleName, loggedInUserID, err := GetUserRole(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
@@ -119,6 +120,7 @@ func GetManagerByID(c *gin.Context) {
 	}
 
 	populateManagerNames(&manager)
+	MaskManagerSalary(&manager, roleName, loggedInUserID)
 
 	c.JSON(http.StatusOK, manager)
 }
@@ -187,7 +189,7 @@ func UpdateManager(c *gin.Context) {
 	// Update restricted fields only if admin/hr
 	if roleName == "admin" || roleName == "hr" {
 		if req.Salary != nil {
-			manager.Salary = *req.Salary
+			manager.Salary = req.Salary
 		}
 		if req.BoardMemID != nil {
 			var checkBoardMem BoardMember
@@ -230,6 +232,7 @@ func UpdateManager(c *gin.Context) {
 	}
 
 	populateManagerNames(&manager)
+	MaskManagerSalary(&manager, roleName, loggedInUserID)
 
 	c.JSON(http.StatusOK, manager)
 }

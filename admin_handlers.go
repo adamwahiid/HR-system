@@ -80,7 +80,7 @@ func CreateUser(c *gin.Context) {
 			worker := Worker{
 				Name:      req.Name,
 				Email:     req.Email,
-				Salary:    req.Salary,
+				Salary:    &req.Salary,
 				RoleID:    req.RoleID,
 				ManagerID: req.ManagerID,
 				UserID:    &createdUser.UserID,
@@ -99,7 +99,7 @@ func CreateUser(c *gin.Context) {
 			manager := Manager{
 				Name:       req.Name,
 				Email:      req.Email,
-				Salary:     req.Salary,
+				Salary:     &req.Salary,
 				RoleID:     req.RoleID,
 				BoardMemID: req.BoardMemID,
 				UserID:     &createdUser.UserID,
@@ -111,7 +111,7 @@ func CreateUser(c *gin.Context) {
 			boardMember := BoardMember{
 				Name:   req.Name,
 				Email:  req.Email,
-				Salary: req.Salary,
+				Salary: &req.Salary,
 				RoleID: req.RoleID,
 				UserID: &createdUser.UserID,
 			}
